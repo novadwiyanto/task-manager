@@ -1,8 +1,7 @@
 package repository
 
 import (
-	"errors"
-	"task-manager/db/models"
+	"task-manager/database/models"
 	"task-manager/internal/data/request"
 	"task-manager/pkg/utils"
 
@@ -17,20 +16,20 @@ type TaskRepository interface {
 	FindByID(id uint) (models.Task, error)
 }
 
-type TaskRepositoryImpl struct {
+type taskRepositoryImpl struct {
 	DB *gorm.DB
 }
 
-func NewTaskRepository(db *gorm.DB) *TaskRepositoryImpl {
-	return &TaskRepositoryImpl{DB: db}
+func NewTaskRepository(db *gorm.DB) *taskRepositoryImpl {
+	return &taskRepositoryImpl{DB: db}
 }
 
-func (t *TaskRepositoryImpl) Save(task models.Task) error {
+func (t *taskRepositoryImpl) Save(task models.Task) error {
 	result := t.DB.Create(&task)
 	return utils.ReturnError(result.Error)
 }
 
-func (t *TaskRepositoryImpl) Update(task models.Task) error {
+func (t *taskRepositoryImpl) Update(task models.Task) error {
 	var updateTask = request.UpdateTaskRequest{
 		Title:       task.Title,
 		Description: task.Description,
@@ -43,27 +42,19 @@ func (t *TaskRepositoryImpl) Update(task models.Task) error {
 	return utils.ReturnError(result.Error)
 }
 
-func (t *TaskRepositoryImpl) Delete(taskId uint) error {
+func (t *taskRepositoryImpl) Delete(taskId uint) error {
 	result := t.DB.Delete(&models.Task{}, taskId)
 	return utils.ReturnError(result.Error)
 }
 
-func (t *TaskRepositoryImpl) FindAll() ([]models.Task, error) {
+func (t *taskRepositoryImpl) FindAll() ([]models.Task, error) {
 	var tasks []models.Task
 	result := t.DB.Find(&tasks)
-	if err := utils.ReturnError(result.Error); err != nil {
-		return nil, err
-	}
-
-	return tasks, nil
+	return tasks, utils.ReturnError(result.Error)
 }
 
-func (t *TaskRepositoryImpl) FindByID(id uint) (models.Task, error) {
+func (t *taskRepositoryImpl) FindByID(id uint) (models.Task, error) {
 	var task models.Task
 	result := t.DB.First(&task, id)
-	if result.Error != nil {
-		return task, errors.New("record not found")
-	}
-
-	return task, nil
+	return task, utils.ReturnError(result.Error)
 }

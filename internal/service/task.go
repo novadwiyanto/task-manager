@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"task-manager/db/models"
+	"task-manager/database/models"
 	"task-manager/internal/data/request"
 	"task-manager/internal/data/response"
 	"task-manager/internal/repository"

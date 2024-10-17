@@ -26,7 +26,7 @@ func (t *TaskController) Create(ctx *gin.Context) {
 	}
 
 	if err := t.taskService.Create(task); err != nil {
-		utils.JsonResponse(ctx, http.StatusInternalServerError, "Internal Server Error", err.Error())
+		utils.JsonResponse(ctx, http.StatusInternalServerError, "Error : Failed to create task", err.Error())
 		return
 	}
 

@@ -2,22 +2,23 @@ package main
 
 import (
 	"net/http"
-	"task-manager/db"
-	"task-manager/internal/routes"
+	"task-manager/database"
 	"task-manager/pkg/utils"
+	"task-manager/routes"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	db := db.DatabaseConnection()
+	db := database.DatabaseConnection()
 	r := gin.Default()
+	database.MigrateDatabase()
 
 	routes.RegisterRoute(r, db)
 
 	server := &http.Server{
-		Addr:           ":8080",
+		Addr:           ":8081",
 		Handler:        r,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
